@@ -1,7 +1,7 @@
 """
 0_Mathematics_of_Cryptography
 
-This repository contains the mathematics necessary for modern cryptography.
+This folder contains the mathematics necessary for modern cryptography.
 
 Small descriptions of the mathematics are given before detailing code for
 computation. The repository contains the group theory and number theory

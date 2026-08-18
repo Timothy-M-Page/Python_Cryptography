@@ -1,7 +1,7 @@
 """
 1_Classical_Cryptography
 
-This repository contains Python implementations of classical ciphers used
+This folder contains Python implementations of classical ciphers used
 before the advent of modern computing.
 
 Each program is designed to highlight the cryptographic principles behind these
