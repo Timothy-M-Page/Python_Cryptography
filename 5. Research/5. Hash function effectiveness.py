@@ -47,7 +47,3 @@ def test_hash_function(string: bytes) -> bytes:
     for x in range(100000, 200000, 1000):
         hash = hash ^ x
     return hash.to_bytes((hash.bit_length() + 7) // 8, byteorder='big')
-
-print(test_hash_function(b'hello'))
-
-print(confusion_measure(test_hash_function, 10, 1))

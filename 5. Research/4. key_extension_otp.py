@@ -1,5 +1,12 @@
 import math
 
+"""
+The objective of this file is to extend a small piece of key material
+into a sufficiently long key to allow the application of a OTP.
+
+However, the problems are a way to be able to do so that introduces more
+entropy than the original key material.
+"""
 
 def to_base(n: int, base: int) -> str:
     if not (2 <= base <= 9):

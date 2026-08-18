@@ -1,5 +1,19 @@
 import math
 
+
+"""
+The deduction of this file is an optimal value that occurs in cryptanalysis
+of caesar encrypted plaintexts. 
+
+The precise variable being optimised is the power to which the density of 
+a given letter in English and in the given plaintext is raised to when their 
+difference is taken, from which the most likely shift can be deduced as the 
+shift with smallest distance from an ordinary distribution of letters function.
+ 
+This is proven mathematically and shown to agree with the empirical value 
+obtained by analysis long encrypted plaintexts.
+"""
+
 alphabet = "abcdefghijklmnopqrstuvwxyz"
 
 freq_list = ["e", "t", "a", "o", "i", "n", "s", "h", "r", "d", "l", "c", "u",
