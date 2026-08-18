@@ -11,7 +11,7 @@ difference is taken, from which the most likely shift can be deduced as the
 shift with smallest distance from an ordinary distribution of letters function.
  
 This is proven mathematically and shown to agree with the empirical value 
-obtained by analysis long encrypted plaintexts.
+obtained by analysis of some long plaintexts.
 """
 
 alphabet = "abcdefghijklmnopqrstuvwxyz"
