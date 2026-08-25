@@ -54,6 +54,6 @@ def trivium_encrypt(plaintext: str, key_stream: bytes) -> bytes:
     return ciphertext
 
 
-def trivium_encrypt_decrypt(ciphertext: bytes, key_stream: bytes) -> str:
+def trivium_decrypt(ciphertext: bytes, key_stream: bytes) -> str:
     plaintext = bytes(p ^ x for p, x in zip(ciphertext, key_stream))
     return plaintext.decode("utf-8", errors="replace")
