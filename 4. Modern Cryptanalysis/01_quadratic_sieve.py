@@ -5,41 +5,13 @@ If N = pq is the modulus in RSA then we may find factors of N by solving
 x**2 - y**2 == 0 mod(N).
 In such a case it follows N divides x**2 - y**2 = (x-y)(x+y).
 
-Provided x != ±y mod(N), N cannot divide each factor (x∓y), thus it's factors
-must split between the two terms.
+Provided x != ±y mod(N) the factors of N must split between the two terms.
 
-So we wish to find x**2 - y**2 = 0 mod(N) then find gcd(x,N) and gcd(y,N).
-Since the factors of N split and N = pq these two factors must be p and q.
-
-In this file we implement 3 versions of this
-
-1. A basic solution to x**2 mod N = y**2.
-
-2. Solutions to x**2 - N == y**2 mod(N) up to a given smoothness bound
-   then combine solutions using index calculus on the resulting powers
-   mod 2 to reconstruct a square.
-   
-3. Solutions to x**2 == N mod(p) for every prime p in the factor base (sieve).
-   Use these solutions to find the primes dividing x**2 - N, then factor the 
-   resulting values over the factor base, and combine the resulting vectors 
-   mod 2 to find a square.
+We find solutions to x**2 == N mod(p) for every prime p in a factor base,
+using these solutions, x, we find the primes dividing x**2 - N, then factor the 
+resulting values over the factor base, and combine the resulting value to
+reconstruct a square by looking at the power vectors mod 2.
 """
-
-
-def very_basic_quad_sieve(n: int) -> list[int]:
-    start = math.ceil(math.sqrt(n))
-    end = 2*start
-
-    for integer in range(start, end):
-        square = integer**2 % n
-
-        if math.isqrt(square)**2 == square:
-            root = math.isqrt(square)
-
-            factor = math.gcd(n, integer - root)
-
-            if 1 < factor < n:
-                return [factor, n // factor]
 
 
 def prime_factors(n: int) -> list[tuple[int, int]]:
@@ -63,22 +35,16 @@ def is_quadratic_residue(a: int, p: int) -> bool:
     return pow(a, (p - 1) // 2, p) in (0, 1)
 
 
-def primes_up_to(x: int) -> list[int]:
+def quad_residue_primes_up_to(x: int, n: int) -> list[int]:
+    """
+     The only primes we need to consider are those up to the smoothness bound,
+     since we are checking for p dividing x**2 - n, the prime in question must
+     be a quadratic residue, hence we may also filter out those that are not.
+     """
     primes = []
     for n in range(2, x + 1):
         if all(n % p != 0 for p in primes if p * p <= n):
             primes.append(n)
-    return primes
-
-
-def quad_residue_primes_up_to(x: int, n: int) -> list[int]:
-    """
-    The only primes we need to consider are those up to the smoothness bound,
-    since we are checking for p dividing x**2 - n, the prime in question must
-    be a quadratic residue, hence we may also filter out those that are not.
-    """
-    primes = primes_up_to(x)
-
     return [p for p in primes if p == 2 or is_quadratic_residue(n, p)]
 
 
@@ -119,46 +85,7 @@ def find_square(vectors: list[list[int]]) -> list[int] | None:
     return None
 
 
-def modular_quad_sieve(n: int, smooth_bound: int, search_range: int) -> tuple[int, int] | str:
-    start = math.ceil(math.sqrt(n))
-    factor_base = quad_residue_primes_up_to(smooth_bound, n)
-    smooth_numbers = []
-    vectors = []
-
-    for integer in range(start - search_range, start + search_range):
-        square = (integer**2 - n)
-        factorisation = prime_factors(square)
-
-        smooth = all(p in factor_base for p, _ in factorisation)
-
-        if smooth:
-            smooth_numbers.append(integer)
-            power_vector = ([int(square < 0)] +
-                            [p_adic_valuation(p, square) % 2
-                             for p in factor_base])
-            vectors.append(power_vector)
-
-    combination = find_square(vectors)
-
-    square_generators = [smooth_numbers[i] for i in combination]
-
-    square_1 = math.prod(square_generators) % n
-    product = math.prod(integer ** 2 - n for integer in square_generators)
-    square_2 = math.isqrt(abs(product)) % n
-
-    factor_1 = math.gcd(square_1 - square_2, n)
-    factor_2 = math.gcd(square_1 + square_2, n)
-
-    if 1 < factor_1 < n:
-        return factor_1, n // factor_1
-
-    if 1 < factor_2 < n:
-        return factor_2, n // factor_2
-
-    return "No factors found for the given smoothness bound and range."
-
-
-def quad_sieve(n: int, smooth_bound: int, search_range: int) -> tuple[int, int] | str:
+def quadratic_sieve(n: int, smooth_bound: int, search_range: int) -> tuple[int, int] | str:
     factor_base = quad_residue_primes_up_to(smooth_bound, n)
     prime_moduli_solutions = {}
 
