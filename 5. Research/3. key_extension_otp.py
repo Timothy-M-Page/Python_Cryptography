@@ -8,6 +8,7 @@ However, the problems are a way to be able to do so that introduces more
 entropy than the original key material.
 """
 
+
 def to_base(n: int, base: int) -> str:
     if not (2 <= base <= 9):
         raise ValueError("Base must be between 2 and 9")

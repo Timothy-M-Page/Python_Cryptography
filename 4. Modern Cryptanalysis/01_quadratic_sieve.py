@@ -1,4 +1,5 @@
 import math
+from itertools import combinations
 
 """
 If N = pq is the modulus in RSA then we may find factors of N by solving
@@ -9,8 +10,8 @@ Provided x != ±y mod(N) the factors of N must split between the two terms.
 
 We find solutions to x**2 == N mod(p) for every prime p in a factor base,
 using these solutions, x, we find the primes dividing x**2 - N, then factor the 
-resulting values over the factor base, and combine the resulting value to
-reconstruct a square by looking at the power vectors mod 2.
+resulting values over the factor base then combine the resulting factorisations 
+to reconstruct a square by looking at the power vectors mod 2.
 """
 
 
@@ -45,6 +46,7 @@ def quad_residue_primes_up_to(x: int, n: int) -> list[int]:
     for n in range(2, x + 1):
         if all(n % p != 0 for p in primes if p * p <= n):
             primes.append(n)
+
     return [p for p in primes if p == 2 or is_quadratic_residue(n, p)]
 
 
@@ -58,29 +60,16 @@ def p_adic_valuation(p: int, n: int) -> int:
 
 
 def find_square(vectors: list[list[int]]) -> list[int] | None:
-    pivots = {}
-    for i, vector in enumerate(vectors):
-        value = 0
-        for j, bit in enumerate(vector):
-            if bit:
-                value |= (1 << j)
+    for size in range(1, len(vectors) + 1):
+        for combination in combinations(range(len(vectors)), size):
 
-        combination = (1 << i)
+            result = [0] * len(vectors[0])
 
-        while value:
-            pivot = value.bit_length() - 1
+            for i in combination:
+                result = [a ^ b for a, b in zip(result, vectors[i])]
 
-            if pivot not in pivots:
-                pivots[pivot] = (value, combination)
-                break
-
-            pivot_value, pivot_combination = pivots[pivot]
-
-            value ^= pivot_value
-            combination ^= pivot_combination
-
-        if value == 0:
-            return [i for i in range(len(vectors)) if combination & (1 << i)]
+            if all(bit == 0 for bit in result):
+                return list(combination)
 
     return None
 

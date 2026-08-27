@@ -34,14 +34,3 @@ class DihedralGroup:
     def print_group(self) -> list[int]:
         return self.group
 
-
-n = 5
-print(DihedralGroup(n).print_group())
-print(DihedralGroup(n).product(7,8))
-print(DihedralGroup(n).inverse(2))
-
-
-"""
-This may be turned into a cipher by taking any cipher using Z/nZ with 
-modular multiplication, and substituting the Dihedral group in its place.
-"""
